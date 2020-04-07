@@ -88,6 +88,9 @@ export default function TableView({ data, columns }: TableViewProps) {
     {
       columns,
       data,
+      initialState: {
+        selectedRowIds: { "0": true },
+      } as any,
     },
     useRowSelect,
     (hooks) => {
@@ -96,16 +99,32 @@ export default function TableView({ data, columns }: TableViewProps) {
           id: "selection",
           Header: ({
             getToggleAllRowsSelectedProps,
-          }: UseRowSelectInstanceProps<object>) => (
-            <div>
-              <IndeterminateCheckbox {...getToggleAllRowsSelectedProps()} />
-            </div>
-          ),
-          Cell: ({ row }: any) => {
+            toggleAllRowsSelected,
+            toggleRowSelected,
+            selectedFlatRows,
+          }: UseRowSelectInstanceProps<object>) => {
+            const { onChange, ...rest } = getToggleAllRowsSelectedProps();
+            const handleOnChange = rest.checked ? () => {
+              // TODO сбрасывать состояние до initial State
+            } : onChange;
+
+            console.log(rest.checked);
+            return (
+              <div>
+                <IndeterminateCheckbox {...rest} onChange={handleOnChange} />
+              </div>
+            );
+          },
+          Cell: ({ row, selectedFlatRows }: any) => {
+            const { onChange, ...rest } = row.getToggleRowSelectedProps();
+            const handleOnChange =
+              rest.checked && selectedFlatRows.length <= 1
+                ? () => {}
+                : onChange;
 
             return (
               <div>
-                <IndeterminateCheckbox {...row.getToggleRowSelectedProps()} />
+                <IndeterminateCheckbox {...rest} onChange={handleOnChange} />
               </div>
             );
           },
@@ -113,7 +132,7 @@ export default function TableView({ data, columns }: TableViewProps) {
         ...columns,
       ]);
     },
-    usePagination,
+    usePagination
   ) as TableInstanceWithPagination<any>; //TODO стремный костыль думаю можно лучше нужно шерстить доку.
 
   return (
