@@ -23,7 +23,6 @@ export default function useFetch<ResponseDataType>(
       })
       .then((json) => {
         setData(json);
-        console.log('seted');
       })
       .catch((error) => {
         setError(error);

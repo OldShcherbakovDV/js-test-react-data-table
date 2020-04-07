@@ -9,9 +9,13 @@ import DeleteCell from "./cells/delete";
 
 interface StatsTableViewProps {
   stats: any[];
+  onItemDelete?: (item: any) => void;
 }
 
-export default function StatsTableView({ stats }: StatsTableViewProps) {
+export default function StatsTableView({
+  stats,
+  onItemDelete = () => {},
+}: StatsTableViewProps) {
   const columns = useMemo(
     () => [
       {
@@ -41,7 +45,7 @@ export default function StatsTableView({ stats }: StatsTableViewProps) {
       {
         Header: () => null,
         accessor: "delete",
-        Cell: ({ row }: Cell) => <DeleteCell row={row} />,
+        Cell: ({ row }: Cell) => <DeleteCell row={row} onItemDelete={onItemDelete}/>,
       },
     ],
     []

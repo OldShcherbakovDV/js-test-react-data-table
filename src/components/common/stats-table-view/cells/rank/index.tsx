@@ -22,7 +22,7 @@ export default function RankCell({ row: { original } }: RankCellProps) {
       {original[RANK_KEY].position}
       {original[RANK_KEY].change ? (
         <RankCellChange isPositive={original[RANK_KEY].change > 0}>
-          {original[RANK_KEY].change}
+          ({original[RANK_KEY].change})
         </RankCellChange>
       ) : null}
     </span>

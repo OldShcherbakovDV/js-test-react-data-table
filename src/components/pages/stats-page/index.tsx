@@ -1,32 +1,38 @@
-import React from "react";
+import React, { useEffect } from "react";
+import { useSelector } from "react-redux";
 
-import useFetch from "../../../hooks/use-fetch";
-import { apiPaths } from "../../../constants/api-paths";
+import { useActions } from "../../../hooks/redux";
+import {
+  getStatsList,
+  loadStats,
+  deleteStatsListItemById,
+} from "../../../redux/modules/stats";
 
 import StatsTableView from "../../common/stats-table-view";
 
-const fetchOptions = {
-  method: "POST",
-};
-
 export default function StatsPage() {
-  const [stats, statsError, isStatsLoading] = useFetch<any>(
-    apiPaths.dataStats,
-    fetchOptions as RequestInit
+  const stats = useSelector(getStatsList);
+  const [statsLoadAction, deleteStatsListItemByIdAction] = useActions(
+    loadStats,
+    deleteStatsListItemById
   );
 
-  const statsElement = isStatsLoading ? (
-    "Loading..."
-  ) : statsError !== null ? (
-    "Error..."
-  ) : stats ? (
-    <StatsTableView stats={stats.data} />
-  ) : null;
+  const handleItemDelete = (item: any) => {
+    deleteStatsListItemByIdAction(item.id);
+  };
+
+  useEffect(() => {
+    statsLoadAction();
+  }, []);
 
   return (
     <>
       <h1>Stats:</h1>
-      {statsElement}
+      {stats && stats.length ? (
+        <StatsTableView stats={stats} onItemDelete={handleItemDelete} />
+      ) : (
+        "Empty table or loading"
+      )}
     </>
   );
 }
